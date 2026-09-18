@@ -61,6 +61,28 @@ the same 70 rows by comparing its recorded production answers to the hand labels
 That is stated plainly here and in `results/openjev_results.json` (`"beats_jev_on_gold": false`)
 because it is the honest result, and because the task framing invited the opposite claim.
 
+### Fresh-traffic holdout (independently re-verified)
+
+A separate set of **106 postings that arrived after training** (published in the LM arm's repo at
+`verify/live/fresh_106.jsonl`, never seen by any model here) was scored by re-running *this
+package's shipped engine* against hosted Jev's recorded answers:
+
+| arm | agreement with hosted Jev on 106 fresh postings |
+|---|---|
+| **open-Jev classifier (this package)** | **106/106 = 100.0%** |
+| open-Jev LM arm (`openjev-lm`) | 104/106 = 98.1% |
+
+That re-run was performed against the shipped `weights/` in this repository, not against a
+training-log number, and its predictions matched the LM arm's independently-recorded
+`classifier_pred` field on all 106 rows.
+
+### Sister project
+
+The **LM arm** — a LoRA adapter for `Qwen2.5-0.5B-Instruct` trained for 89 minutes on the same
+6-vCPU CPU-only host, reaching 65/70 on the gold set — lives at
+[`DECRUX9812/openjev-lm`](https://github.com/DECRUX9812/openjev-lm), together with a paper
+covering both arms, two independently-written evaluation harnesses, and row-level receipts.
+
 Where open-Jev *does* match the closed model is agreement on real production traffic:
 
 | measure | value |

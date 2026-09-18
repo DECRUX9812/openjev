@@ -14,6 +14,12 @@
    "n": 2631,
    "rate": 0.9939,
    "note": "bucket agreement on the full 2,631-posting production stream"
+  },
+  "fresh_traffic_holdout_106": {
+   "classifier_agreement_with_hosted_jev": "106/106 = 100.0%",
+   "lm_arm_agreement_with_hosted_jev": "104/106 = 98.1%",
+   "verified": "re-run against this package's shipped weights/ on 2026-09-18",
+   "source": "openjev-lm/verify/live/fresh_106.jsonl"
   }
  },
  "per_class_recall_on_gold": {
@@ -119,5 +125,10 @@
   "tuning": "decision bias tuned on a held-out dev split, never on the gold set",
   "jev_baseline": "hosted model's recorded production answers compared to the same hand labels",
   "approaches_tried": "../docs/approaches-tried.md"
+ },
+ "sister_project": {
+  "lm_arm": "https://github.com/DECRUX9812/openjev-lm",
+  "paper": "openjev-lm/paper/openjev-paper.pdf",
+  "lm_arm_gold": "65/70 = 92.9% (Qwen2.5-0.5B + LoRA, 400 steps, 89 min on 6 vCPU, no GPU)"
  }
 }
