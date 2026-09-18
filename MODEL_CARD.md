@@ -105,6 +105,26 @@ python -m openjev.eval --gold-data <lab>/data --corpus <lab>/runs/leads_corpus_f
   ceiling is the teacher, and the teacher's two misses are inherited, not fixable from its
   labels.
 
+## A caveat about the shipped decision bias
+
+The shipped head carries a small per-class decision bias (`[0, 0.75, 0, 0]` over
+`service_lead / staff_role / generic_job / junk`) that was tuned on a held-out dev split.
+
+That dev split was drawn to mirror the **gold set**, and the gold set is deliberately stratified
+— it over-samples the rare buckets so the metric is informative. Production traffic is nothing
+like that: 98% of the real corpus is `generic_job`. So the shipped bias is calibrated for the
+evaluation, and a model deployed on real traffic should have its bias **re-derived from that
+traffic's own class mix**, or set to zero.
+
+This is not hypothetical. The same weights with the bias forced to zero score **67/70** on gold
+versus 66/70 with it. That variant is deliberately not shipped and not claimed as the result —
+preferring it requires having looked at the gold set first, which is not a valid way to choose a
+model. But it is the right starting point for a production deployment, and it is why this
+section exists.
+
+Rule of thumb: tune the bias against the distribution you will actually serve, not against the
+distribution you are measuring on.
+
 ## Known failure modes
 
 1. **`service_lead` is not reliably detectable.** There is exactly one real labelled example
