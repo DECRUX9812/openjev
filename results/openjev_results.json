@@ -66,8 +66,8 @@
    }
   },
   "qwen_lora_finetune": {
-   "verdict": "not attempted to completion",
-   "detail": "CPU-only host: measured ~13 tok/s training throughput on the 0.5B base at batch 2 / seq 256 (40.7 s per micro-step), i.e. ~10h per epoch over the 2,361-row corpus. Infeasible before the deadline; the frozen-encoder + small-head route reaches a stronger result in minutes."
+   "verdict": "superseded \u2014 corrected after the run completed",
+   "detail": "An early throughput measurement (~13 tok/s, batch 2 / seq 256) suggested ~10 h per epoch and was recorded here as infeasible. That measurement was misconfigured: with the LoRA path fixed, complete runs finish in ~90 minutes on the same 6-vCPU host. Results live in the lora_sft_qwen05b entry below and in github.com/DECRUX9812/openjev-lm."
   },
   "retrieval_knn_blend": {
    "verdict": "excluded \u2014 actively worse than the head alone",
@@ -110,7 +110,7 @@
     "bool_agreement": 0.9886,
     "fit_mean_abs_err": 0.163
    },
-   "cost_note": "~10 h per epoch on 6 vCPUs, no CUDA; the shipped frozen-encoder model trains in minutes for +1 posting",
+   "cost_note": "~90 minutes per full 400-step run on 6 vCPUs, no CUDA (an earlier ~10 h/epoch figure came from a misconfigured throughput measurement); the shipped frozen-encoder model still trains in minutes for +1 posting on gold.",
    "detail": "../docs/approaches-tried.md"
   }
  },

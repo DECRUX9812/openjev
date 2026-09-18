@@ -80,11 +80,11 @@ looking result (25/70) that a less careful reading would have accepted.
 For scale, the same evaluator on the **untrained** Qwen2.5-0.5B base (constrained decoding, no
 fine-tune) scores **51/70 = 72.9%**, with `staff_role` 0/14. So the fine-tune is doing real work:
 +17 points at step 120 of 420. It is a genuine, measurable distillation — it is simply not as
-good as the frozen-encoder route, and it costs ~10 hours per epoch on this hardware.
+good as the frozen-encoder route. (An early throughput measurement suggested ~10 h/epoch and was
+later found to be misconfigured; the completed runs below are 400–420 steps in ~90 minutes.)
 
 The last open item was that no LoRA adapter had ever produced a number on the held-out set. It
-now has one. A snapshot at **step 120 of 420** (training was still live; the full run cannot
-finish on this hardware) scores:
+now has one. A snapshot at **step 120 of 420** (training was still live at the time) scores:
 
 | measure | value |
 |---|---|
@@ -105,10 +105,13 @@ The completed run (all 420 steps) lands at **65/70 = 92.9%** — a real distilla
 over the untrained base, and it closes the gap to the shipped frozen-encoder model to a single
 posting. Its `bool` agreement is 98.9% and its Brier score 0.124, i.e. it is well calibrated.
 
-**The frozen-encoder route still wins, on cost rather than on a landslide:** 66/70 for a model
-that trains in *minutes* on CPU, versus 65/70 for a fine-tune that needs roughly ten hours per
-epoch on the same hardware. One posting apart in accuracy, two orders of magnitude apart in
-training cost. That is the whole argument for the shipped design.
+**The frozen-encoder route still wins, on iteration cost rather than on a landslide:** 66/70 for
+a model that trains in *minutes* on CPU, versus 65/70 for a fine-tune that needs ~90 minutes per
+run on the same hardware. One posting apart in accuracy, roughly an order of magnitude apart in
+training cost. That is the whole argument for the shipped design. The completed LM track (a
+balanced, fully Jev-labelled corpus; 2.16M trainable parameters; 400 steps) now lives at
+`DECRUX9812/openjev-lm` and reaches the same 65/70 = 92.9% from a stronger corpus, verified by
+two independent harnesses that agree row-for-row.
 
 Worth stating because the LoRA route is the more intuitively appealing one: it works, it is
 competitive, and it is far too slow to iterate on without a GPU.
