@@ -85,8 +85,11 @@
    "note": "shared trunk supervised on the 5 auxiliary booleans + fit; same four misses"
   },
   "larger_encoder_bge_base": {
-   "verdict": "not obtained",
-   "note": "killed twice by another agent's pkill mid-run; untried"
+   "verdict": "no gain under the dev-tuned protocol",
+   "gold_dev_tuned": "66/70 (staff_role 13/14, generic_job 53/54)",
+   "gold_raw_zero_bias": "67/70 observed \u2014 deliberately NOT claimed, see ../docs/approaches-tried.md",
+   "encoder_blend_logit_space": "66/70 \u2014 dev tuning chose weight 0.0 on the small model",
+   "note": "complementary errors with bge-small did not survive ensembling on dev"
   },
   "classifier_scale_out": {
    "tfidf_unweighted": "56/70",

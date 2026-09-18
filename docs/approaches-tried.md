@@ -27,8 +27,37 @@ shipped result can be read in context rather than as a lucky single number.
 | real + synthetic (all rare) | 62/70 | |
 | real + synthetic (everything) | 61/70 | monotone: more synthetic, worse |
 | **retrieval/kNN (k=1..35), blended with the head** | knn 60, blend 62 | **actively destroys rows the head gets right** — see below |
-| bigger encoder (bge-base, 768-d) | not obtained | process killed twice by another agent's `pkill`; untried |
+| bigger encoder — bge-base, 768-d, same split, same dev-tuned protocol | 66/70 | **no gain** — see below |
+| logit-space blend of the two encoders | 66/70 | dev tuning chose weight 0.0 on the small model, i.e. it collapsed to bge-base |
+| bge-base, raw argmax with the decision bias set to zero | 67/70 observed | **not claimed** — see below |
 | **LoRA SFT of Qwen2.5-0.5B (partial epoch, step 120/420)** | **63/70 = 90.0%** | measured — see below |
+
+### On the larger encoder, and on a number that looks better but is not claimed
+
+The obvious next lever after `bge-small` was `bge-base` (768-d, same frozen-encoder recipe, same
+train/dev split). It scores **66/70** under the same protocol the shipped model uses — a bias
+chosen on dev. So a 4× larger encoder bought nothing on this task.
+
+Two things worth recording, because both are traps:
+
+1. **Its errors are complementary to `bge-small`'s, not better.** `bge-small` gets
+   `generic_job` 54/54 and `staff_role` 12/14; `bge-base` gets `staff_role` 13/14 and
+   `generic_job` 53/54. That looks like an ensemble opportunity, so it was built — blending the
+   two posterior distributions in logit space with the mixing weight and bias chosen on dev. Dev
+   tuning chose a weight of **0.0** on the small model: the blend collapses to `bge-base`. No
+   gain.
+
+2. **`bge-base` with the decision bias forced to zero scores 67/70 on gold.** It is tempting to
+   ship that instead. It is not shipped, and it is not claimed as the result, because the only
+   reason to prefer the zero-bias variant over the dev-tuned one is that we looked at gold
+   first. A number selected by inspecting the test set is not a result; it is a memorised
+   answer. The dev-tuned protocol gives 66, so 66 is what is reported.
+
+   (The same trap caught this work once already: a first version of the blending script applied
+   the decision bias to *probabilities* while the engine applies it to *logits*. That silent
+   mismatch produced a fake 67/70 with `staff_role` 14/14. It was caught only by re-scoring the
+   same weights through the shipped engine, which disagreed. Always score a candidate through
+   the exact code path that will serve it.)
 
 ### On the retrieval result, because it is counter-intuitive
 
