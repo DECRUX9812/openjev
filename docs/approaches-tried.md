@@ -77,6 +77,11 @@ looking result (25/70) that a less careful reading would have accepted.
 
 ### The LoRA track, finally scored
 
+For scale, the same evaluator on the **untrained** Qwen2.5-0.5B base (constrained decoding, no
+fine-tune) scores **51/70 = 72.9%**, with `staff_role` 0/14. So the fine-tune is doing real work:
++17 points at step 120 of 420. It is a genuine, measurable distillation — it is simply not as
+good as the frozen-encoder route, and it costs ~10 hours per epoch on this hardware.
+
 The last open item was that no LoRA adapter had ever produced a number on the held-out set. It
 now has one. A snapshot at **step 120 of 420** (training was still live; the full run cannot
 finish on this hardware) scores:
@@ -96,13 +101,17 @@ schema validity is 100% by construction. Every miss is the same shape (7 of 7:
 `staff_role`/`service_lead` predicted `generic_job`), which is the same rare-class
 under-prediction the frozen-encoder model shows.
 
-**So the frozen-encoder route wins, and not narrowly:** 66/70 for a model that trains in minutes
-on CPU, versus 90.0% at 120 of 420 steps for a fine-tune that needs roughly ten hours per epoch
-on this hardware. Worth stating plainly since the LoRA route is the more intuitively appealing
-one — it is the slower route *and* it was behind at the point of comparison.
+The completed run (all 420 steps) lands at **65/70 = 92.9%** — a real distillation, +20 points
+over the untrained base, and it closes the gap to the shipped frozen-encoder model to a single
+posting. Its `bool` agreement is 98.9% and its Brier score 0.124, i.e. it is well calibrated.
 
-A later checkpoint may close some of that gap; the run was still training at report time and its
-loss curve was still descending. Nothing here says a completed LoRA run would lose.
+**The frozen-encoder route still wins, on cost rather than on a landslide:** 66/70 for a model
+that trains in *minutes* on CPU, versus 65/70 for a fine-tune that needs roughly ten hours per
+epoch on the same hardware. One posting apart in accuracy, two orders of magnitude apart in
+training cost. That is the whole argument for the shipped design.
+
+Worth stating because the LoRA route is the more intuitively appealing one: it works, it is
+competitive, and it is far too slow to iterate on without a GPU.
 
 ## The remaining gap, precisely
 

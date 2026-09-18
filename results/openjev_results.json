@@ -95,6 +95,23 @@
    "tfidf_unweighted": "56/70",
    "tfidf_class_balanced": "62/70",
    "frozen_bge_small_mlp": "66-67/70 (shipped)"
+  },
+  "lora_sft_qwen05b": {
+   "verdict": "works, but dominated on training cost by the frozen-encoder route",
+   "gold": {
+    "untrained_base": "51/70 = 72.9%",
+    "step_120_of_420": "63/70 = 90.0%",
+    "complete_420_of_420": "65/70 = 92.9%"
+   },
+   "complete_run_metrics": {
+    "jev_bucket_agreement": 0.957,
+    "ece_5bin": 0.057,
+    "brier_4class": 0.124,
+    "bool_agreement": 0.9886,
+    "fit_mean_abs_err": 0.163
+   },
+   "cost_note": "~10 h per epoch on 6 vCPUs, no CUDA; the shipped frozen-encoder model trains in minutes for +1 posting",
+   "detail": "../docs/approaches-tried.md"
   }
  },
  "evaluation_protocol": {
