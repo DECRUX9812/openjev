@@ -1,0 +1,78 @@
+{
+ "openjev_version": "0.1.0",
+ "generated_at": "2026-09-18",
+ "headline": {
+  "gold_hits": 66,
+  "gold_n": 70,
+  "gold_accuracy": 0.9429,
+  "hosted_jev_gold_hits": 68,
+  "hosted_jev_gold_accuracy": 0.9714,
+  "beats_jev_on_gold": false,
+  "delta_hits_vs_jev": -2,
+  "agreement_with_hosted_jev_on_production_corpus": {
+   "same": 2615,
+   "n": 2631,
+   "rate": 0.9939,
+   "note": "bucket agreement on the full 2,631-posting production stream"
+  }
+ },
+ "per_class_recall_on_gold": {
+  "service_lead": "0/2",
+  "staff_role": "12/14",
+  "generic_job": "54/54"
+ },
+ "hosted_jev_per_class_recall_on_gold": {
+  "service_lead": "1/2",
+  "staff_role": "13/14",
+  "generic_job": "54/54"
+ },
+ "training": {
+  "encoder": "BAAI/bge-small-en-v1.5",
+  "encoder_frozen": true,
+  "seeds_ensembled": 12,
+  "hidden": 384,
+  "dropout": 0.1,
+  "steps": 1500,
+  "train_rows": 2512,
+  "dev_rows": 49,
+  "decision_bias_tuned_on_dev": [
+   0.0,
+   0.75,
+   0.0,
+   0.0
+  ],
+  "dev_tuned_score": 0.9115,
+  "dev_single_seed_acc_range": [
+   0.898,
+   0.9184
+  ]
+ },
+ "weights_sha256_16": {
+  "aux_heads.npz": "adfe0f29da5801aa",
+  "bucket_head.npz": "6ed660ee9e687d35",
+  "config.json": "9f59603ba3c218bc"
+ },
+ "negative_results": {
+  "synthetic_posting_training": {
+   "verdict": "excluded from the shipped model",
+   "detail": "see ../docs/synthetic-data-negative-result.md",
+   "mixture_results_gold": {
+    "real_only": "66/70",
+    "synth_only": "57/70",
+    "real_plus_synth_service_lead_only": "39/70",
+    "real_plus_synth_sl_junk": "63/70",
+    "real_plus_synth_all_rare": "62/70",
+    "real_plus_synth_everything": "61/70"
+   }
+  },
+  "qwen_lora_finetune": {
+   "verdict": "not attempted to completion",
+   "detail": "CPU-only host: measured ~13 tok/s training throughput on the 0.5B base at batch 2 / seq 256 (40.7 s per micro-step), i.e. ~10h per epoch over the 2,361-row corpus. Infeasible before the deadline; the frozen-encoder + small-head route reaches a stronger result in minutes."
+  }
+ },
+ "evaluation_protocol": {
+  "gold_set": "70 hand-labelled postings, stratified, held out of training entirely",
+  "tuning": "decision bias tuned on a held-out dev split, never on the gold set",
+  "jev_baseline": "hosted model's recorded production answers compared to the same hand labels"
+ }
+}

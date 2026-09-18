@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openjev"
+version = "0.1.0"
+description = "Open, local, zero-cost reimplementation of the Jev decision layer for job postings"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "fastembed>=0.3",
+    "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+train = ["scipy>=1.11"]
+
+[project.scripts]
+openjev = "openjev.cli:main"
+
+[tool.setuptools]
+packages = ["openjev"]

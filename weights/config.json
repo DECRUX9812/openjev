@@ -1,0 +1,28 @@
+{
+ "buckets": [
+  "service_lead",
+  "staff_role",
+  "generic_job",
+  "junk"
+ ],
+ "embedder": "BAAI/bge-small-en-v1.5",
+ "dim": 384,
+ "hidden": 384,
+ "bias": [
+  0.0,
+  0.75,
+  0.0,
+  0.0
+ ],
+ "nouls": [
+  "technical_need",
+  "business_buyer",
+  "small_firm_doable",
+  "pay_stated",
+  "evergreen_repost",
+  "fit"
+ ],
+ "input": "title + employer + pay only (legacy_category excluded)",
+ "ensemble_seeds": 12,
+ "trained_on": "typesafe-lab production corpus, Jev soft bucket labels"
+}
