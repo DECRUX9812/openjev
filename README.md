@@ -81,9 +81,20 @@ python -m openjev.eval \
     --weights   weights
 ```
 
-It prints gold accuracy, per-class recall, and — separately — agreement with hosted Jev on
-the full production corpus. Both are reported because they answer different questions; see
+It prints gold accuracy, per-class recall, and — separately — agreement with hosted Jev on the
+full production corpus. Both are reported because they answer different questions; see
 `openjev/eval.py`.
+
+## Everything that was tried, and what it scored
+
+`docs/approaches-tried.md` is the honest ledger: the shipped model, the TF-IDF baselines, the
+multi-task variant, the retrieval/kNN blend that made things *worse*, the synthetic-data
+mixtures that made things worse, and the two approaches (a larger encoder, a LoRA fine-tune)
+that were not obtained. Every number is on the same 70 held-out postings.
+
+Headline: the shipped model is **66/70 = 94.3%** against hosted Jev's **68/70 = 97.1%**, with
+**99.4%** bucket agreement with hosted Jev across all 2,631 real production postings, at $0 per
+call, offline, deterministically.
 
 ## Honest limitations
 

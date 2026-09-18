@@ -68,11 +68,36 @@
   "qwen_lora_finetune": {
    "verdict": "not attempted to completion",
    "detail": "CPU-only host: measured ~13 tok/s training throughput on the 0.5B base at batch 2 / seq 256 (40.7 s per micro-step), i.e. ~10h per epoch over the 2,361-row corpus. Infeasible before the deadline; the frozen-encoder + small-head route reaches a stronger result in minutes."
+  },
+  "retrieval_knn_blend": {
+   "verdict": "excluded \u2014 actively worse than the head alone",
+   "detail": "see ../docs/approaches-tried.md",
+   "gold": {
+    "head": "66/70",
+    "knn_alone": "60/70",
+    "blend": "62/70"
+   },
+   "note": "the blend broke rows the head had right; with 2,579/2,631 neighbours being generic_job the neighbourhood prior swamps rare classes"
+  },
+  "multi_task_aux_labels": {
+   "verdict": "no gain; kept as a training variant script",
+   "gold": "66/70",
+   "note": "shared trunk supervised on the 5 auxiliary booleans + fit; same four misses"
+  },
+  "larger_encoder_bge_base": {
+   "verdict": "not obtained",
+   "note": "killed twice by another agent's pkill mid-run; untried"
+  },
+  "classifier_scale_out": {
+   "tfidf_unweighted": "56/70",
+   "tfidf_class_balanced": "62/70",
+   "frozen_bge_small_mlp": "66-67/70 (shipped)"
   }
  },
  "evaluation_protocol": {
   "gold_set": "70 hand-labelled postings, stratified, held out of training entirely",
   "tuning": "decision bias tuned on a held-out dev split, never on the gold set",
-  "jev_baseline": "hosted model's recorded production answers compared to the same hand labels"
+  "jev_baseline": "hosted model's recorded production answers compared to the same hand labels",
+  "approaches_tried": "../docs/approaches-tried.md"
  }
 }
