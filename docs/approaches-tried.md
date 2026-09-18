@@ -28,7 +28,7 @@ shipped result can be read in context rather than as a lucky single number.
 | real + synthetic (everything) | 61/70 | monotone: more synthetic, worse |
 | **retrieval/kNN (k=1..35), blended with the head** | knn 60, blend 62 | **actively destroys rows the head gets right** — see below |
 | bigger encoder (bge-base, 768-d) | not obtained | process killed twice by another agent's `pkill`; untried |
-| LoRA SFT of Qwen2.5-0.5B | not obtained | 27 s per micro-step on 6 vCPUs ≈ 10 h/epoch; infeasible |
+| **LoRA SFT of Qwen2.5-0.5B (partial epoch, step 120/420)** | **63/70 = 90.0%** | measured — see below |
 
 ### On the retrieval result, because it is counter-intuitive
 
@@ -45,6 +45,35 @@ Tuning was clean for this one — the first run was invalid because the class-we
 tuning objective was indexed in the wrong order, which silently optimised for the wrong class.
 Fixed and re-run; the corrected numbers are above. Worth knowing: that bug produced a plausible
 looking result (25/70) that a less careful reading would have accepted.
+
+### The LoRA track, finally scored
+
+The last open item was that no LoRA adapter had ever produced a number on the held-out set. It
+now has one. A snapshot at **step 120 of 420** (training was still live; the full run cannot
+finish on this hardware) scores:
+
+| measure | value |
+|---|---|
+| bucket accuracy on gold | **63/70 = 90.0%** |
+| agreement with hosted Jev | 91.4% |
+| mean bucket confidence | 0.929 |
+| ECE (5-bin) | 0.044 |
+| Brier (4-class) | 0.128 |
+| boolean-field agreement | 96.6% |
+| fit mean absolute error | 0.235 |
+
+Scored with the lab's own `eval_openjev.py` — parallel constrained decoding, schema forced, so
+schema validity is 100% by construction. Every miss is the same shape (7 of 7:
+`staff_role`/`service_lead` predicted `generic_job`), which is the same rare-class
+under-prediction the frozen-encoder model shows.
+
+**So the frozen-encoder route wins, and not narrowly:** 66/70 for a model that trains in minutes
+on CPU, versus 90.0% at 120 of 420 steps for a fine-tune that needs roughly ten hours per epoch
+on this hardware. Worth stating plainly since the LoRA route is the more intuitively appealing
+one — it is the slower route *and* it was behind at the point of comparison.
+
+A later checkpoint may close some of that gap; the run was still training at report time and its
+loss curve was still descending. Nothing here says a completed LoRA run would lose.
 
 ## The remaining gap, precisely
 
